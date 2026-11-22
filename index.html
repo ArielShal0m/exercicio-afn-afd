@@ -451,6 +451,7 @@ function drawD(){
     const lab=[...new Set(syms)].sort().join(', ');
     const lt=(x,y)=>`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-size="19" font-weight="700" fill="var(--red)" font-family="Archivo,sans-serif" style="paint-order:stroke;stroke:var(--soft);stroke-width:5px">${esc(lab)}</text>`;
     if(fi===ti){const r=nodeR(A),x=A.x,y=A.y;
+      if(VW<600){s+=`<path d="M${x+r-4},${y-12} C${x+r+58},${y-44} ${x+r+58},${y+44} ${x+r-4},${y+12}" fill="none" stroke="currentColor" stroke-width="2.2" marker-end="url(#ar2)"/>`+lt(x+r+56,y);return}
       s+=`<path d="M${x-12},${y-r+3} C${x-42},${y-r-62} ${x+42},${y-r-62} ${x+12},${y-r+3}" fill="none" stroke="currentColor" stroke-width="2.2" marker-end="url(#ar2)"/>`+lt(x,y-r-56);return}
     const both=groups[ti+'>'+fi],dx=B.x-A.x,dy=B.y-A.y,L=Math.hypot(dx,dy)||1,px=-dy/L,py=dx/L,off=both?34:0;
     const cx=(A.x+B.x)/2+px*off,cy=(A.y+B.y)/2+py*off;
@@ -504,7 +505,7 @@ function genFromTable(){
   let maxd=Math.max(0,...Object.values(depth));rows.forEach(x=>{if(!(x.k in depth))depth[x.k]=++maxd});
   const lv={};rows.forEach(x=>(lv[depth[x.k]]=lv[depth[x.k]]||[]).push(x));
   const cols=Object.keys(lv).length,d=state.draw={nid:1,nodes:[],edges:[]},ids={};
-  Object.keys(lv).sort((a,b)=>a-b).forEach((L,ci)=>{const arr=lv[L];arr.forEach((x,ri)=>{const n=addNode(state.ren&&state.ren.on&&state.ren.map&&(x.k in state.ren.map)?state.ren.map[x.k]:fmt0(x.k),...(VW<600?[(ri+1)*VW/(arr.length+1)+(arr.length===1?30:0),cols>1?70+ci*(300/(cols-1)):220]:[cols>1?90+ci*((VW-170)/(cols-1)):VW/2,(ri+1)*440/(arr.length+1)+10]));n.ini=!!x.r.ini;n.fin=!!x.r.fin;ids[x.k]=n.id})});
+  Object.keys(lv).sort((a,b)=>a-b).forEach((L,ci)=>{const arr=lv[L];arr.forEach((x,ri)=>{const n=addNode(state.ren&&state.ren.on&&state.ren.map&&(x.k in state.ren.map)?state.ren.map[x.k]:fmt0(x.k),...(VW<600?[(ri+1)*(VW-60)/(arr.length+1)+(arr.length===1?0:0),cols>1?70+ci*(300/(cols-1)):220]:[cols>1?90+ci*((VW-170)/(cols-1)):VW/2,(ri+1)*440/(arr.length+1)+10]));n.ini=!!x.r.ini;n.fin=!!x.r.fin;ids[x.k]=n.id})});
   rows.forEach(x=>SIG.forEach(s=>{if(cm[s]==null)return;const v=parseSet(x.r.v[cm[s]]);if(!Array.isArray(v))return;const dk=key(v);if(dk in ids)addEdge(ids[x.k],ids[dk],s)}));
   pending=null;dmarks={};hint('Estados puxados da tabela. Arraste para organizar.');redrawD();
 }
