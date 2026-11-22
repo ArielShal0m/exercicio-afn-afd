@@ -504,7 +504,7 @@ function genFromTable(){
   let maxd=Math.max(0,...Object.values(depth));rows.forEach(x=>{if(!(x.k in depth))depth[x.k]=++maxd});
   const lv={};rows.forEach(x=>(lv[depth[x.k]]=lv[depth[x.k]]||[]).push(x));
   const cols=Object.keys(lv).length,d=state.draw={nid:1,nodes:[],edges:[]},ids={};
-  Object.keys(lv).sort((a,b)=>a-b).forEach((L,ci)=>{const arr=lv[L];arr.forEach((x,ri)=>{const n=addNode(state.ren&&state.ren.on&&state.ren.map&&(x.k in state.ren.map)?state.ren.map[x.k]:fmt0(x.k),(cols>1?90+ci*((VW-170)/(cols-1)):VW/2),(ri+1)*440/(arr.length+1)+10);n.ini=!!x.r.ini;n.fin=!!x.r.fin;ids[x.k]=n.id})});
+  Object.keys(lv).sort((a,b)=>a-b).forEach((L,ci)=>{const arr=lv[L];arr.forEach((x,ri)=>{const n=addNode(state.ren&&state.ren.on&&state.ren.map&&(x.k in state.ren.map)?state.ren.map[x.k]:fmt0(x.k),...(VW<600?[(ri+1)*VW/(arr.length+1)+(arr.length===1?30:0),cols>1?70+ci*(300/(cols-1)):220]:[cols>1?90+ci*((VW-170)/(cols-1)):VW/2,(ri+1)*440/(arr.length+1)+10]));n.ini=!!x.r.ini;n.fin=!!x.r.fin;ids[x.k]=n.id})});
   rows.forEach(x=>SIG.forEach(s=>{if(cm[s]==null)return;const v=parseSet(x.r.v[cm[s]]);if(!Array.isArray(v))return;const dk=key(v);if(dk in ids)addEdge(ids[x.k],ids[dk],s)}));
   pending=null;dmarks={};hint('Estados puxados da tabela. Arraste para organizar.');redrawD();
 }
