@@ -4,6 +4,8 @@ Página interativa para treinar a conversão de um Autômato Finito Não Determi
 
 ## O que tem na página
 
+São dois desafios para escolher no topo: **Desafio 1** (AFN de 3 estados) e **Desafio 2** (AFN de 4 estados). Cada um guarda as respostas separadamente. Para dúvidas, há um link para a aula em vídeo que mostra a transformação.
+
 1. **Tabela de transição do AFN:** já vem montada; é só preencher.
 2. **Tabela de transição do AFD:** adicione uma linha para cada conjunto alcançável (ou liste os 8 subconjuntos e marque os inacessíveis). Marque o estado inicial e os finais.
 3. **Renomear para S0, S1…:** cria uma coluna com nomes curtos para cada estado. O botão do olho volta para a tabela original.
@@ -14,4 +16,4 @@ Cada passo tem correção automática com dicas, e o botão "Copiar minhas respo
 
 ## Como usar
 
-Abra a página publicada (GitHub Pages) ou baixe o `index.html` e abra no navegador. Não precisa instalar nada.
+Abra a página publicada em https://arielshal0m.github.io/exercicio-afn-afd/ (funciona no celular) ou baixe o `index.html` e abra no navegador. Não precisa instalar nada.
