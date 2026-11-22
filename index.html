@@ -118,7 +118,7 @@ textarea#out{width:100%;min-height:160px;font:14px ui-monospace,monospace;margin
 .help{margin:14px 0 0;font-size:16px}
 .help a{color:var(--red);font-weight:700}
 .mut{color:var(--mut);font-size:14px;overflow-wrap:anywhere}
-@media(max-width:600px){td input[type=text],th input{min-width:4.4em;padding:8px 4px}th{font-size:13px}th,td{padding:3px}.del{width:36px}.lg{display:none}.sm{display:inline}}
+@media(max-width:600px){td input[type=text],th input{min-width:3.4em;padding:8px 2px}th{font-size:13px}th,td{padding:2px}.del{width:30px}.lg{display:none}.sm{display:inline}}
 @media(prefers-reduced-motion:no-preference){.fb.show{animation:pop .25s ease-out}@keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}}
 </style>
 </head>
@@ -250,7 +250,7 @@ const CHS={
      strs:['ab','aab','b','aba','abab','abb','aa'],legacy:'afn-afd-ex2',vb:'0 55 600 150',
      pos:{q0:[110,160],q1:[300,160],q2:[490,160]},edges:[['q0','q1','a',-1],['q1','q2','b',-1]],loops:[['q0','up','a'],['q1','up','b'],['q2','up','a']]},
   2:{nfa:{q0:{a:['q1','q2'],b:[]},q1:{a:['q1'],b:['q3']},q2:{a:[],b:['q2','q3']},q3:{a:['q3'],b:[]}},start:'q0',finals:['q3'],
-     strs:['ab','aab','abab','b','abba','aaa','abaa'],vb:'0 0 600 345',
+     strs:['ab','aab','abab','b','abba','aaa','abaa'],vb:'0 -18 600 368',
      pos:{q0:[95,165],q1:[290,80],q2:[290,250],q3:[480,165]},edges:[['q0','q1','a',1],['q0','q2','a',-1],['q1','q3','b',1],['q2','q3','b',-1]],loops:[['q1','up','a'],['q2','down','b'],['q3','right','a']]}
 };
 let CH=1,NFA,START,FINALS,FN,STRS,KEY,DFA,order,QS,ALL,DEAD,VW=720;
