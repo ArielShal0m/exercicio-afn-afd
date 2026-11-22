@@ -116,6 +116,13 @@ textarea#out{width:100%;min-height:160px;font:14px ui-monospace,monospace;margin
 .chsel button[aria-pressed=true]{background:var(--red);border-color:var(--red);color:#fff}
 .sm{display:none}
 .help{margin:14px 0 0;font-size:16px}
+details.ans summary{cursor:pointer;color:var(--red);font-weight:700;font-size:15px;min-height:44px;display:flex;align-items:center;gap:6px}
+details.ans summary::-webkit-details-marker{color:var(--red)}
+.ansbody{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:4px 0 8px;font-size:15px;line-height:1.55}
+.ansbody p{margin:6px 0}.ansbody ul,.ansbody ol{margin:6px 0;padding-left:20px}.ansbody li{margin-bottom:6px}
+.ansbody table{min-width:0;margin:8px 0}.ansbody .scroll{margin:6px 0}
+.ok-t{color:var(--ok);font-weight:700}.bad-t{color:var(--red);font-weight:700}
+.q details.ans{grid-column:1/-1;margin-top:-4px}
 .help a{color:var(--red);font-weight:700}
 .mut{color:var(--mut);font-size:14px;overflow-wrap:anywhere}
 @media(max-width:600px){td input[type=text],th input{min-width:3.4em;padding:8px 2px}th{font-size:13px}th,td{padding:2px}.del{width:30px}.lg{display:none}.sm{display:inline}}
@@ -165,7 +172,7 @@ textarea#out{width:100%;min-height:160px;font:14px ui-monospace,monospace;margin
 <button class="b main" data-act="check" data-t="afn">Corrigir passo 1</button>
 </div>
 <div class="fb" id="fb-afn"></div>
-<details class="gab"><summary>Ver gabarito do passo 1 (tenta antes)</summary><div class="scroll" id="g-afn"></div></details>
+<details class="gab ans"><summary>Ver resposta e explicação (tenta antes)</summary><div class="ansbody" id="g-afn"></div></details>
 </div></section>
 
 <section class="band step"><div class="wrap">
@@ -185,18 +192,18 @@ textarea#out{width:100%;min-height:160px;font:14px ui-monospace,monospace;margin
 <div id="renmap" class="renmap scroll"></div>
 <div class="btns" style="margin-top:18px"><button class="b main" data-act="check" data-t="afd">Corrigir passo 2</button></div>
 <div class="fb" id="fb-afd"></div>
-<details class="gab"><summary>Ver gabarito do passo 2 (tenta antes)</summary><div class="scroll" id="g-afd"></div></details>
+<details class="gab ans"><summary>Ver resposta e explicação (tenta antes)</summary><div class="ansbody" id="g-afd"></div></details>
 </div>
 </div></section>
 
 <section class="band step"><div class="wrap">
 <div class="stephead"><h2>Conferindo o AFD</h2><span class="tag">Passo 3</span></div>
 <p>Use a sua tabela do AFD para responder. Para testar uma cadeia, comece em <code>{q0}</code> e vá seguindo a tabela símbolo por símbolo.</p>
-<div class="q"><label for="q-tot">Quantos subconjuntos existem ao todo com <span class="nq">3</span> estados (contando o ∅)?</label><input id="q-tot" type="text" inputmode="numeric"></div>
-<div class="q"><label for="q-inac">Quantos desses são inacessíveis?</label><input id="q-inac" type="text" inputmode="numeric"></div>
-<div class="q"><label for="q-n">Quantos estados sobram no AFD final? (com ou sem o ∅, os dois valem)</label><input id="q-n" type="text" inputmode="numeric"></div>
-<div class="q"><label for="q-fin">Quantos estados finais o AFD tem?</label><input id="q-fin" type="text" inputmode="numeric"></div>
-<div class="q"><label for="q-dead">Qual é o estado morto (de onde nunca mais se aceita)?</label><input id="q-dead" type="text"></div>
+<div class="q"><label for="q-tot">Quantos subconjuntos existem ao todo com <span class="nq">3</span> estados (contando o ∅)?</label><input id="q-tot" type="text" inputmode="numeric"><details class="ans"><summary>Ver resposta e explicação</summary><div class="ansbody" id="a-tot"></div></details></div>
+<div class="q"><label for="q-inac">Quantos desses são inacessíveis?</label><input id="q-inac" type="text" inputmode="numeric"><details class="ans"><summary>Ver resposta e explicação</summary><div class="ansbody" id="a-inac"></div></details></div>
+<div class="q"><label for="q-n">Quantos estados sobram no AFD final? (com ou sem o ∅, os dois valem)</label><input id="q-n" type="text" inputmode="numeric"><details class="ans"><summary>Ver resposta e explicação</summary><div class="ansbody" id="a-n"></div></details></div>
+<div class="q"><label for="q-fin">Quantos estados finais o AFD tem?</label><input id="q-fin" type="text" inputmode="numeric"><details class="ans"><summary>Ver resposta e explicação</summary><div class="ansbody" id="a-fin"></div></details></div>
+<div class="q"><label for="q-dead">Qual é o estado morto (de onde nunca mais se aceita)?</label><input id="q-dead" type="text"><details class="ans"><summary>Ver resposta e explicação</summary><div class="ansbody" id="a-dead"></div></details></div>
 <div class="strs" id="strs"></div>
 <div class="btns" style="margin-top:16px"><button class="b main" data-act="check" data-t="q">Corrigir passo 3</button></div>
 <div class="fb" id="fb-q"></div>
@@ -228,6 +235,7 @@ textarea#out{width:100%;min-height:160px;font:14px ui-monospace,monospace;margin
 </div>
 <p class="tip" style="margin-top:8px">O botão "Puxar" cria os estados e setas a partir do que você escreveu no passo 2. Se a tabela tiver erro, o desenho vem com o mesmo erro. O estado vazio (∅) é opcional no desenho: se você não desenhar ele nem as setas que vão para ele, não conta como erro. Depois de renomear no passo 2, você pode nomear os estados do desenho como S0, S1… e usar o olho para ver os conjuntos.</p>
 <div class="fb" id="fb-draw"></div>
+<details class="gab ans"><summary>Ver resposta e explicação (tenta antes)</summary><div class="ansbody" id="g-draw"></div></details>
 </div></section>
 
 <footer class="band"><div class="wrap">
@@ -289,7 +297,7 @@ function buildMap(){const keys=[];let ini=null;
   if(ini===null&&keys.includes(key([START])))ini=key([START]);
   if(ini!==null){keys.splice(keys.indexOf(ini),1);keys.unshift(ini)}
   const map={};keys.forEach((k,i)=>map[k]='S'+i);return {map,keys}}
-function renderRen(){const ren=state.ren,box=document.getElementById('renmap');
+function renderRen(){const ren=state.ren,box=document.getElementById('renmap');gabarito();
   document.querySelectorAll('button.eye').forEach(b=>{b.disabled=!(ren&&ren.map);b.setAttribute('aria-pressed',ren&&ren.on?'true':'false');b.querySelector('.eyetxt').textContent=ren&&ren.on?'Voltar à tabela original':'Mostrar S0, S1…'});
   if(!ren||!ren.map){box.innerHTML='';return}
   const rowOf=k=>state.afd.rows.find(r=>{const p=parseSet(r.s);return Array.isArray(p)&&key(p)===k});
@@ -323,18 +331,45 @@ function render(id){
 function renderQ(){
   const q=state.q;
   document.getElementById('q-n').value=q.n;document.getElementById('q-tot').value=q.tot||'';document.getElementById('q-inac').value=q.inac||'';document.getElementById('q-fin').value=q.fin;document.getElementById('q-dead').value=q.dead;
-  document.getElementById('strs').innerHTML=STRS.map(w=>`<div class="q"><label for="s-${w}">A cadeia <b class="mono">${w}</b> é</label><select id="s-${w}" data-str="${w}"><option value="">escolha…</option><option value="a" ${q.strs[w]==='a'?'selected':''}>aceita</option><option value="r" ${q.strs[w]==='r'?'selected':''}>rejeitada</option></select></div>`).join('');
+  document.getElementById('strs').innerHTML=STRS.map(w=>`<div class="q"><label for="s-${w}">A cadeia <b class="mono">${w}</b> é</label><select id="s-${w}" data-str="${w}"><option value="">escolha…</option><option value="a" ${q.strs[w]==='a'?'selected':''}>aceita</option><option value="r" ${q.strs[w]==='r'?'selected':''}>rejeitada</option></select><details class="ans"><summary>Ver resposta e explicação</summary><div class="ansbody" id="a-s-${w}"></div></details></div>`).join('');
 }
 
+function pathOf(w){let k=START;const p=[fmt(k)];for(const c of w){k=DFA[k].tr[c];p.push(fmt(k))}return {p,k}}
 function gabarito(){
-  let a='<table><thead><tr><th>δ (AFN)</th>'+SIG.map(x=>`<th>${x}</th>`).join('')+'</tr></thead><tbody>';
-  Object.keys(NFA).forEach(q=>{a+=`<tr><td class="mono">${q===START?'→':''}${FINALS.includes(q)?'*':''}${q}</td>`+SIG.map(x=>`<td class="mono">${fmt(key(NFA[q][x]))}</td>`).join('')+'</tr>'});
-  document.getElementById('g-afn').innerHTML=a+'</tbody></table>';
-  let d='<table><thead><tr><th>Estado do AFD</th>'+SIG.map(x=>`<th>${x}</th>`).join('')+'<th>Inicial</th><th>Final</th><th>Inacessível</th></tr></thead><tbody>';
-  [...order,...ALL.filter(k=>!(k in DFA))].forEach(k=>{const r=k in DFA;d+=`<tr${r?'':' style="opacity:.55"'}><td class="mono">${fmt(k)}</td>`+SIG.map(x=>`<td class="mono">${fmt(trOf(k,x))}</td>`).join('')+`<td>${k===START?'sim':''}</td><td>${isFin(k)?'sim':''}</td><td>${r?'':'sim (corta)'}</td></tr>`});
-  document.getElementById('g-afd').innerHTML=d+'</tbody></table><p class="tip">As linhas apagadas são os inacessíveis. Quem fez só pelos alcançáveis não precisa delas.</p>';
+  const set=id=>document.getElementById(id);
+  const fq=q=>(q===START?'→':'')+(FINALS.includes(q)?'*':'')+q;
+  const reach=order.filter(k=>k!=='');const inac=ALL.filter(k=>!(k in DFA));const fins=order.filter(k=>DFA[k].fin);
+  const n=QS.length,list=a=>a.map(fmt).join(', ');
+  /* passo 1 */
+  let a='<p>Para cada estado do diagrama, siga as setas com cada símbolo. Onde não sai seta com aquele símbolo, a transição vai para ∅.</p><div class="scroll"><table><thead><tr><th>δ (AFN)</th>'+SIG.map(x=>`<th>${x}</th>`).join('')+'</tr></thead><tbody>';
+  QS.forEach(q=>{a+=`<tr><td class="mono">${fq(q)}</td>`+SIG.map(x=>`<td class="mono">${fmt0(key(NFA[q][x]))}</td>`).join('')+'</tr>'});
+  a+='</tbody></table></div><ul>'+QS.map(q=>`<li><b>${q}</b>: `+SIG.map(x=>{const d=NFA[q][x];return `com <b>${x}</b> `+(d.length>1?`saem duas setas, para ${d.join(' e ')}, então {${d.join(',')}}`:d.length?`vai para ${d[0]}`:'não sai seta, então ∅')}).join('; ')+'.</li>').join('')+`</ul><p>A seta de entrada marca o inicial (${START}) e o círculo duplo marca o final (${FINALS.join(', ')}).</p>`;
+  set('g-afn').innerHTML=a;
+  /* passo 2 */
+  let d='<p>Comece pelo estado inicial e só crie linha para os conjuntos que aparecerem como destino. Para achar a linha de um conjunto, junte as linhas do AFN de cada estado que está dentro dele (união coluna por coluna).</p><ol>';
+  const known=[START];
+  order.forEach(k=>{const s=k?k.split(','):[];const news=[];
+    let li=`<li><b>${fmt(k)}</b>`+(k===START?`: é o estado inicial, igual à linha ${START} do AFN.`:k===''?': com qualquer símbolo continua em ∅ (essa linha é opcional).':s.length>1?` = linha ${s.join(' ∪ linha ')}.`:` = linha ${s[0]} do AFN.`);
+    if(k!==''){li+='<br>'+SIG.map(x=>{const t=trOf(k,x);if(!known.includes(t)){known.push(t);news.push(t)}return `${x}: `+(s.length>1?s.map(q=>fmt0(key(NFA[q][x]))).join(' ∪ ')+' = ':'')+`<b>${fmt(t)}</b>`}).join(' · ');
+      li+='<br>'+(news.length?`Apareceu ${news.map(fmt).join(' e ')}: ${news.length>1?'viram linhas novas':'vira linha nova'}.`:'Nenhum conjunto novo.')}
+    d+=li+'</li>'});
+  d+=`</ol><p>Não surgiu mais nenhum conjunto novo, então a tabela acabou.</p><div class="scroll"><table><thead><tr><th>Estado do AFD</th>`+SIG.map(x=>`<th>${x}</th>`).join('')+'<th>Inicial</th><th>Final</th></tr></thead><tbody>';
+  order.forEach(k=>{d+=`<tr><td class="mono">${fmt(k)}${k===''?' (opcional)':''}</td>`+SIG.map(x=>`<td class="mono">${fmt(DFA[k].tr[x])}</td>`).join('')+`<td>${DFA[k].ini?'sim':''}</td><td>${DFA[k].fin?'sim':''}</td></tr>`});
+  d+=`</tbody></table></div><ul><li><b>Inicial:</b> só ${fmt(START)}, porque é o conjunto que tem apenas o inicial do AFN.</li><li><b>Finais:</b> ${list(fins)}, porque contêm ${FN}, o final do AFN.</li><li><b>Inacessíveis</b> (se você listou os 2${n===3?'³':n===4?'⁴':'^'+n} = ${ALL.length} subconjuntos): ${list(inac)}. Nenhum deles aparece como destino saindo de ${fmt(START)}.</li></ul>`;
+  set('g-afd').innerHTML=d;
+  /* passo 3 */
+  set('a-tot').innerHTML=`<p><b>${ALL.length}</b>. O AFN tem ${n} estados (${QS.join(', ')}). Cada estado pode estar ou não estar no conjunto, então são 2${n===3?'³':n===4?'⁴':'^'+n} = ${ALL.length} subconjuntos, contando o ∅.</p>`;
+  set('a-inac').innerHTML=`<p><b>${inac.length}</b>. Saindo de ${fmt(START)}, só aparecem ${order.length} conjuntos: ${list(order)}. Os outros ${ALL.length} − ${order.length} = ${inac.length} nunca aparecem como destino: ${list(inac)}.</p>`;
+  set('a-n').innerHTML=`<p><b>${order.length}</b> contando o ∅, ou <b>${order.length-1}</b> sem ele (os dois valem). São os conjuntos alcançáveis: ${list(order)}.</p>`;
+  set('a-fin').innerHTML=`<p><b>${fins.length}</b>: ${list(fins)}. É final todo conjunto que contém pelo menos um estado final do AFN (${FN}).</p>`;
+  set('a-dead').innerHTML=`<p><b>∅</b>. Com ${SIG.join(' e com ')} ele volta para ele mesmo e não é final. Quem cai nele nunca mais chega num estado final, então a cadeia é rejeitada.</p>`;
+  fillStrAns();
+  /* passo 4 */
+  const tr=[];order.forEach(k=>SIG.forEach(x=>tr.push({k,x,t:DFA[k].tr[x]})));
+  set('g-draw').innerHTML=`<p>Desenhe um estado (círculo) para cada linha da tabela do AFD e uma seta para cada célula das colunas ${SIG.join(' e ')}. A seta de entrada vai no inicial e o círculo duplo nos finais.</p><ul><li><b>Estados:</b> ${order.map(k=>fmt(k)+(DFA[k].ini?' (inicial)':'')+(DFA[k].fin?' (final)':'')).join(', ')}.</li><li><b>Setas:</b><ul>${tr.map(e=>`<li class="mono">δ(${fmt(e.k)}, ${e.x}) = ${fmt(e.t)}${e.t===''||e.k===''?' <span class="mut">(opcional)</span>':''}</li>`).join('')}</ul></li></ul><p>O ∅ é opcional: se você não desenhar ele, também não precisa das setas que vão para ele. Num AFD sai exatamente uma seta com cada símbolo de cada estado desenhado.</p>`;
 }
-
+function fillStrAns(){STRS.forEach(w=>{const el=document.getElementById('a-s-'+w);if(!el)return;const {p,k}=pathOf(w);const ok=DFA[k].fin;
+  el.innerHTML=`<p><span class="${ok?'ok-t':'bad-t'}">${ok?'Aceita':'Rejeitada'}</span>. Começando em ${fmt(START)} e lendo ${w.split('').join(', ')}: ${p.join(' → ')}. ${ok?`Terminou em ${fmt(k)}, que é final.`:k===''?'Caiu no ∅ (estado morto) e de lá nunca sai.':`Terminou em ${fmt(k)}, que não é final.`}</p>`})}
 function drawSvg(){
   const c=CHS[CH],N=c.pos,R=27;document.getElementById('svg').setAttribute('viewBox',c.vb);
   let s='<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="currentColor"/></marker></defs>';

@@ -12,7 +12,7 @@ São dois desafios para escolher no topo: **Desafio 1** (AFN de 3 estados) e **D
 4. **Perguntas:** total de subconjuntos, inacessíveis, estado morto e teste de cadeias.
 5. **Diagrama do AFD:** monte o desenho sem desenhar: crie estados, arraste e ligue as transições clicando.
 
-Cada passo tem correção automática com dicas, e o botão "Copiar minhas respostas" gera um texto para revisar depois. O que você digita fica salvo no seu navegador.
+Cada passo tem correção automática com dicas e um botão "Ver resposta e explicação" (inclusive em cada pergunta do Passo 3), e o botão "Copiar minhas respostas" gera um texto para revisar depois. O que você digita fica salvo no seu navegador.
 
 ## Como usar
 
