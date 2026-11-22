@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Exercício AFN para AFD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday study: calm, precise, a bit of teacher's red pen
+   IDEA a printed exercise sheet that gets corrected in red and green ink
+   PICTURE the AFN state diagram drawn large at the top
+   COLOUR white paper, black ink, signal red for errors, green for right answers
+   TYPE Archivo wide 800 for titles + Archivo for text
+   LAYOUT diagram beside the formal definition on laptop; stacked on phone; steps in one column */
+:root{color-scheme:light dark;--bg:light-dark(#fff,#0e0e0e);--ink:light-dark(#111,#ececec);--mut:light-dark(#5a5a5a,#a8a8a8);--line:light-dark(#d6d6d6,#2e2e2e);--soft:light-dark(#f4f4f4,#181818);--red:light-dark(#e4002b,#ff5470);--ok:light-dark(#08743a,#45d685);--okbg:light-dark(#e5f5ea,#0f2a1a);--badbg:light-dark(#fde7eb,#30111a);--empbg:light-dark(#fff5d1,#2b2510)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 Archivo,system-ui,sans-serif;overflow-x:clip}
+.band{padding:clamp(24px,4vw,56px) max(5vw,16px)}
+.wrap{max-width:1100px;margin:0 auto}
+header.band{border-top:10px solid var(--ink);padding-bottom:8px}
+h1{font-size:clamp(32px,5vw,48px);font-stretch:112%;font-weight:800;line-height:1.05;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+h2{font-size:24px;font-stretch:112%;font-weight:800;line-height:1.1;margin:0 0 6px}
+p{margin:0 0 12px;max-width:68ch}
+.lead{color:var(--mut);font-size:17px}
+.top{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:28px;align-items:center}
+.diag{border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--soft)}
+.diag svg{display:block;width:100%;height:auto;color:var(--ink)}
+.def{font-size:16px}
+.def dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 14px;margin:0 0 14px}
+.def dt{font-weight:700}
+.def dd{margin:0}
+.def code,.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px}
+details.how{border-top:1px solid var(--line);padding-top:10px}
+details.how summary{cursor:pointer;font-weight:700}
+details.how ol{margin:8px 0 0;padding-left:20px}
+details.how li{margin-bottom:6px}
+.step{border-top:3px solid var(--ink)}
+.stephead{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;justify-content:space-between}
+.tag{font-weight:800;color:var(--red);font-size:16px;white-space:nowrap}
+.scroll{overflow-x:auto;margin:14px 0}
+table{border-collapse:collapse;min-width:100%}
+th,td{border:1px solid var(--line);padding:4px;text-align:center;vertical-align:middle}
+th{background:var(--soft);font-weight:700;font-size:15px}
+td input[type=text],th input{width:100%;min-width:7.5em;font:16px ui-monospace,Menlo,Consolas,monospace;padding:9px 8px;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--ink);text-align:center}
+th input{font-weight:700;min-width:4em}
+td input[type=text]:hover,th input:hover{border-color:var(--line)}
+input:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid var(--red);outline-offset:1px}
+input[type=checkbox]{width:22px;height:22px;accent-color:var(--ink);cursor:pointer}
+.ok{background:var(--okbg)!important;border-color:var(--ok)!important}
+.bad{background:var(--badbg)!important;border-color:var(--red)!important}
+.emp{background:var(--empbg)!important}
+td.okc{background:var(--okbg)}
+td.badc{background:var(--badbg)}
+.del{border:0;background:none;color:var(--mut);font-size:22px;width:44px;height:44px;cursor:pointer;border-radius:6px}
+.del:hover{color:var(--red);background:var(--badbg)}
+input.ren{background:var(--soft)!important;color:var(--ink);font-weight:700;cursor:default}
+.renbox{margin-top:22px;border:1.5px dashed var(--line);border-radius:10px;padding:14px 16px}
+.renbox h3{font-size:18px;margin:0 0 4px}
+button.eye{display:inline-flex;align-items:center;gap:8px}
+button.eye[disabled]{opacity:.45;cursor:not-allowed}
+button.eye[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.renmap table{min-width:0;margin-top:12px}
+.renmap td,.renmap th{padding:6px 14px;font-family:ui-monospace,Menlo,Consolas,monospace}
+.renmap td:first-child{font-weight:800}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button.b{font:600 15px Archivo,sans-serif;min-height:44px;padding:0 16px;border-radius:8px;border:1.5px solid var(--ink);background:var(--bg);color:var(--ink);cursor:pointer}
+button.b:hover{background:var(--soft)}
+button.main{background:var(--ink);color:var(--bg)}
+button.main:hover{background:var(--ink);opacity:.88}
+button.red{border-color:var(--red);color:var(--red)}
+.fb{margin-top:14px;border-left:4px solid var(--line);padding:4px 0 4px 14px;display:none}
+.fb.show{display:block}
+.fb .score{font-weight:800;font-size:20px;margin-bottom:4px}
+.fb.good{border-color:var(--ok)}
+.fb.good .score{color:var(--ok)}
+.fb.meh{border-color:var(--red)}
+.fb.meh .score{color:var(--red)}
+.fb ul{margin:4px 0 0;padding-left:20px}
+.fb li{margin-bottom:4px}
+.tip{font-size:15px;color:var(--mut);margin:0}
+details.gab{margin-top:12px}
+details.gab summary{cursor:pointer;color:var(--mut);font-size:15px;min-height:32px}
+.q{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.q input,.q select{font:16px ui-monospace,Menlo,Consolas,monospace;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);min-height:44px;width:10em}
+.strs{display:grid;grid-template-columns:repeat(auto-fit,minmax(15em,1fr));gap:0 28px}
+footer.band{background:var(--soft);border-top:1px solid var(--line)}
+#copied{color:var(--ok);font-weight:700;align-self:center}
+textarea#out{width:100%;min-height:160px;font:14px ui-monospace,monospace;margin-top:10px;display:none;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:10px}
+.drawgrid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start;margin-top:12px}
+.canvas{border:1px solid var(--line);border-radius:10px;background:var(--soft);background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:20px 20px}
+.canvas svg{display:block;width:100%;height:auto;color:var(--ink);touch-action:none;user-select:none}
+.canvas g.nd{cursor:grab}
+.panel h3{font-size:17px;margin:14px 0 6px}
+.panel .row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.panel .wrapr{flex-wrap:wrap}
+.panel label{font-weight:600}
+.panel select,.panel input[type=text]{font:16px ui-monospace,Menlo,Consolas,monospace;min-height:44px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.panel input[type=text]{flex:1;width:100%}
+.li{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding:2px 4px;font-size:15px}
+.li input[type=text]{min-height:38px;flex:1}
+.li .lab{flex:1;font-family:ui-monospace,Menlo,Consolas,monospace}
+.li label{display:flex;gap:4px;align-items:center;font-weight:400;font-size:14px;white-space:nowrap}
+.li .del{width:38px;height:38px}
+.li.okc,.li.badc{border-radius:4px}
+@media(max-width:860px){.drawgrid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:760px){.top{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.q{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:no-preference){.fb.show{animation:pop .25s ease-out}@keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+<header class="band"><div class="wrap">
+<h1>Conversão de AFN para AFD</h1>
+<p class="lead">Exercício no mesmo estilo da aula, com outro autômato. As tabelas já estão prontas: é só preencher, adicionar linhas ou colunas e clicar em Corrigir.</p>
+</div></header>
+
+<section class="band" style="padding-top:12px"><div class="wrap top">
+<div class="diag" aria-label="Diagrama do AFN"><svg id="svg" viewBox="0 0 600 250" role="img"></svg></div>
+<div class="def">
+<h2>O AFN do exercício</h2>
+<dl>
+<dt>Estados</dt><dd><code>Q = {q0, q1, q2}</code></dd>
+<dt>Alfabeto</dt><dd><code>Σ = {a, b}</code></dd>
+<dt>Inicial</dt><dd><code>q0</code> (seta de entrada)</dd>
+<dt>Final</dt><dd><code>F = {q2}</code> (círculo duplo)</dd>
+</dl>
+<p class="tip">Não tem transição vazia (ε). Onde não sai seta com aquele símbolo, a transição vai para o conjunto vazio <code>∅</code>.</p>
+<details class="how"><summary>Como fazer (resumo do método)</summary>
+<ol>
+<li>Monte a tabela do AFN: para cada estado e cada símbolo, escreva o conjunto de destinos.</li>
+<li>O estado inicial do AFD é <code>{q0}</code>. Coloque ele na primeira linha.</li>
+<li>Para cada linha, a transição com um símbolo é a <b>união</b> dos destinos de cada estado que está no conjunto.</li>
+<li>Todo conjunto novo que aparecer como destino vira uma linha nova. Repita até não surgir nenhum conjunto novo (inclusive <code>∅</code>).</li>
+<li>É final no AFD todo conjunto que contém pelo menos um estado final do AFN (aqui, <code>q2</code>).</li>
+<li>Se você listou todos os subconjuntos (2³ = 8), marque como <b>inacessível</b> todo conjunto que não aparece como destino saindo de <code>{q0}</code>. Eles são cortados do AFD final.</li>
+</ol></details>
+</div>
+</div></section>
+
+<section class="band step"><div class="wrap">
+<div class="stephead"><h2>Tabela de transição do AFN</h2><span class="tag">Passo 1</span></div>
+<p>Preencha para onde cada estado vai com <b>a</b> e com <b>b</b>. A seta → marca o inicial e o * marca o final.</p>
+<p class="tip">Pode escrever <code>{q1,q2}</code>, <code>q1q2</code> ou <code>q1, q2</code>. Para vazio use <code>-</code>, <code>vazio</code> ou <code>∅</code>. Célula em branco conta como não respondida.</p>
+<div class="scroll"><table id="t-afn"></table></div>
+<div class="btns">
+<button class="b" data-act="addrow" data-t="afn">+ Linha</button>
+<button class="b" data-act="addcol" data-t="afn">+ Coluna</button>
+<button class="b" data-act="delcol" data-t="afn">− Coluna</button>
+<button class="b main" data-act="check" data-t="afn">Corrigir passo 1</button>
+</div>
+<div class="fb" id="fb-afn"></div>
+<details class="gab"><summary>Ver gabarito do passo 1 (tenta antes)</summary><div class="scroll" id="g-afn"></div></details>
+</div></section>
+
+<section class="band step"><div class="wrap">
+<div class="stephead"><h2>Tabela de transição do AFD</h2><span class="tag">Passo 2</span></div>
+<p>Pode fazer de dois jeitos: <b>listar os 8 subconjuntos</b> (incluindo ∅), preencher tudo e marcar os inacessíveis; ou <b>começar por {q0}</b> e só criar linha para os conjuntos que aparecem como destino. Marque também o inicial e os finais.</p>
+<p class="tip">Escreva os estados como conjuntos: <code>{q0}</code>, <code>{q1,q2}</code>, <code>∅</code>. A ordem das linhas não importa. A linha do estado vazio (∅) é opcional: com ou sem ela, está certo.</p>
+<div class="scroll"><table id="t-afd"></table></div>
+<div class="btns">
+<button class="b" data-act="addrow" data-t="afd">+ Linha</button>
+<button class="b" data-act="addcol" data-t="afd">+ Coluna</button>
+<button class="b" data-act="delcol" data-t="afd">− Coluna</button>
+</div>
+<div class="renbox">
+<h3>Organizar: renomear para S0, S1, S2…</h3>
+<p class="tip">Com a tabela montada, troque os conjuntos por nomes curtos. S0 é sempre o estado inicial e os marcados como inacessíveis ficam de fora. Os nomes aparecem numa coluna nova, ao lado dos estados, e as colunas a e b passam a usar os nomes S. O botão do olho volta para a tabela original; para editar as transições, use a tabela original.</p>
+<div class="btns"><button class="b main" data-act="rename">Renomear para S0, S1…</button><button class="b eye" data-act="eye" aria-pressed="false" disabled><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="eyetxt">Mostrar S0, S1…</span></button></div>
+<div id="renmap" class="renmap scroll"></div>
+<div class="btns" style="margin-top:18px"><button class="b main" data-act="check" data-t="afd">Corrigir passo 2</button></div>
+<div class="fb" id="fb-afd"></div>
+<details class="gab"><summary>Ver gabarito do passo 2 (tenta antes)</summary><div class="scroll" id="g-afd"></div></details>
+</div>
+</div></section>
+
+<section class="band step"><div class="wrap">
+<div class="stephead"><h2>Conferindo o AFD</h2><span class="tag">Passo 3</span></div>
+<p>Use a sua tabela do AFD para responder. Para testar uma cadeia, comece em <code>{q0}</code> e vá seguindo a tabela símbolo por símbolo.</p>
+<div class="q"><label for="q-tot">Quantos subconjuntos existem ao todo com 3 estados (contando o ∅)?</label><input id="q-tot" type="text" inputmode="numeric"></div>
+<div class="q"><label for="q-inac">Quantos desses são inacessíveis?</label><input id="q-inac" type="text" inputmode="numeric"></div>
+<div class="q"><label for="q-n">Quantos estados sobram no AFD final? (com ou sem o ∅, os dois valem)</label><input id="q-n" type="text" inputmode="numeric"></div>
+<div class="q"><label for="q-fin">Quantos estados finais o AFD tem?</label><input id="q-fin" type="text" inputmode="numeric"></div>
+<div class="q"><label for="q-dead">Qual é o estado morto (de onde nunca mais se aceita)?</label><input id="q-dead" type="text"></div>
+<div class="strs" id="strs"></div>
+<div class="btns" style="margin-top:16px"><button class="b main" data-act="check" data-t="q">Corrigir passo 3</button></div>
+<div class="fb" id="fb-q"></div>
+</div></section>
+
+<section class="band step"><div class="wrap">
+<div class="stephead"><h2>Diagrama do AFD</h2><span class="tag">Passo 4</span></div>
+<p>Monte o desenho sem desenhar: adicione os estados, arraste para organizar e ligue as transições. Para ligar, escolha o símbolo, <b>clique no estado de origem e depois no de destino</b> (clicar duas vezes no mesmo estado cria um laço).</p>
+<div class="drawgrid">
+<div>
+<div class="canvas"><svg id="dsvg" viewBox="0 0 720 440" role="img" aria-label="Editor do diagrama do AFD"></svg></div>
+<p class="tip" id="dhint">Escolha o símbolo e clique em um estado para começar uma transição.</p>
+</div>
+<div class="panel">
+<div class="row"><label for="d-sym">Símbolo da transição</label><select id="d-sym"><option value="a">a</option><option value="b">b</option></select></div>
+<div class="row"><input id="d-name" type="text" placeholder="ex.: {q1,q2}" aria-label="Nome do novo estado"><button class="b" data-act="dadd">+ Estado</button></div>
+<h3>Estados</h3>
+<div id="d-nodes"></div>
+<h3>Transições</h3>
+<div class="row wrapr"><select id="d-from" aria-label="De"></select><span>—</span><select id="d-sym2" aria-label="Símbolo"><option>a</option><option>b</option></select><span>→</span><select id="d-to" aria-label="Para"></select><button class="b" data-act="dedge">Ligar</button></div>
+<div id="d-edges"></div>
+</div>
+</div>
+<div class="btns" style="margin-top:14px">
+<button class="b" data-act="dgen">Puxar estados da minha tabela do passo 2</button>
+<button class="b" data-act="dclear">Limpar diagrama</button>
+<button class="b eye" data-act="eye" aria-pressed="false" disabled><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="eyetxt">Mostrar S0, S1…</span></button>
+<button class="b main" data-act="check" data-t="draw">Corrigir passo 4</button>
+</div>
+<p class="tip" style="margin-top:8px">O botão "Puxar" cria os estados e setas a partir do que você escreveu no passo 2. Se a tabela tiver erro, o desenho vem com o mesmo erro. O estado vazio (∅) é opcional no desenho: se você não desenhar ele nem as setas que vão para ele, não conta como erro. Depois de renomear no passo 2, você pode nomear os estados do desenho como S0, S1… e usar o olho para ver os conjuntos.</p>
+<div class="fb" id="fb-draw"></div>
+</div></section>
+
+<footer class="band"><div class="wrap">
+<h2>Mandar para o Claude corrigir</h2>
+<p>Além da correção automática, você pode copiar tudo que respondeu e colar no chat para eu comentar os erros com calma.</p>
+<div class="btns">
+<button class="b main" data-act="checkall">Corrigir tudo</button>
+<button class="b" data-act="copy">Copiar minhas respostas</button>
+<button class="b red" data-act="reset">Limpar tudo</button>
+<span id="copied"></span>
+</div>
+<textarea id="out" readonly aria-label="Respostas para copiar"></textarea>
+</div></footer>
+
+<script>
+{
+const SIG=['a','b'];
+const NFA={q0:{a:['q0','q1'],b:[]},q1:{a:[],b:['q1','q2']},q2:{a:['q2'],b:[]}};
+const START='q0',FINALS=['q2'];const FN=FINALS[0];
+const STRS=['ab','aab','b','aba','abab','abb','aa'];
+const KEY='afn-afd-ex2';
+const key=a=>[...a].sort((x,y)=>+x.slice(1)-+y.slice(1)).join(',');
+const fmt0=k=>k===''?'∅':'{'+k+'}';
+const fmt=k=>fmt0(k)+(state&&state.ren&&state.ren.map&&(k in state.ren.map)?' ('+state.ren.map[k]+')':'');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* construção por subconjuntos derivada do AFN */
+const step=(set,x)=>{const r=new Set();set.forEach(q=>NFA[q][x].forEach(d=>r.add(d)));return key(r)};
+const DFA={};const order=[];
+{const queue=[key([START])];while(queue.length){const k=queue.shift();if(k in DFA)continue;const set=k?k.split(','):[];const tr={};SIG.forEach(x=>{tr[x]=step(set,x);if(!(tr[x] in DFA))queue.push(tr[x])});DFA[k]={tr,fin:set.some(q=>FINALS.includes(q)),ini:k===START};order.push(k)}}
+const accepts=w=>{let k=START;for(const c of w)k=DFA[k].tr[c];return DFA[k].fin};
+const QS=Object.keys(NFA);const ALL=[];for(let m=0;m<(1<<QS.length);m++)ALL.push(key(QS.filter((q,i)=>m>>i&1)));ALL.sort((x,y)=>(x?x.split(',').length:0)-(y?y.split(',').length:0)||x.localeCompare(y));
+const trOf=(k,x)=>step(k?k.split(','):[],x);const isFin=k=>(k?k.split(','):[]).some(q=>FINALS.includes(q));
+const DEAD=order.filter(k=>SIG.every(x=>DFA[k].tr[x]===k)&&!DFA[k].fin);
+
+function parseSet(str){
+  const s=String(str??'').trim().toLowerCase();
+  if(!s)return null;
+  const c=s.replace(/\s/g,'');
+  if(['∅','ø','-','—','–','vazio','{}','[]','phi','vazia'].includes(c))return [];
+  const sm=c.match(/^s(\d+)$/);
+  if(sm){const m=state&&state.ren&&state.ren.map;if(m){const k=Object.keys(m).find(x=>m[x].toLowerCase()===c);if(k!==undefined)return k?k.split(','):[]}return 'inv'}
+  const t=s.match(/q\d+/g);
+  if(!t)return 'inv';
+  return [...new Set(t)];
+}
+
+let state;
+function toS(str){const p=parseSet(str);const m=state&&state.ren&&state.ren.map;if(Array.isArray(p)&&m){const k=key(p);if(k in m)return m[k]}return str}
+function toOrig(str){if(/^\s*s\d+\s*$/i.test(String(str))){const p=parseSet(str);if(Array.isArray(p))return fmt0(key(p))}return str}
+function label(str){return state&&state.ren&&state.ren.on?toS(str):toOrig(str)}
+function buildMap(){const keys=[];let ini=null;
+  state.afd.rows.forEach(r=>{if(r.inac)return;const p=parseSet(r.s);if(!Array.isArray(p)||p.some(q=>!NFA[q]))return;const k=key(p);if(keys.includes(k))return;keys.push(k);if(r.ini&&ini===null)ini=k});
+  if(ini===null&&keys.includes(key([START])))ini=key([START]);
+  if(ini!==null){keys.splice(keys.indexOf(ini),1);keys.unshift(ini)}
+  const map={};keys.forEach((k,i)=>map[k]='S'+i);return {map,keys}}
+function renderRen(){const ren=state.ren,box=document.getElementById('renmap');
+  document.querySelectorAll('button.eye').forEach(b=>{b.disabled=!(ren&&ren.map);b.setAttribute('aria-pressed',ren&&ren.on?'true':'false');b.querySelector('.eyetxt').textContent=ren&&ren.on?'Voltar à tabela original':'Mostrar S0, S1…'});
+  if(!ren||!ren.map){box.innerHTML='';return}
+  const rowOf=k=>state.afd.rows.find(r=>{const p=parseSet(r.s);return Array.isArray(p)&&key(p)===k});
+  box.innerHTML='<p class="tip" style="margin-top:10px">'+Object.keys(ren.map).map(k=>ren.map[k]+' = '+esc(fmt0(k))).join(' · ')+'. Mudou a tabela? Clique em Renomear de novo para atualizar.</p>'}
+const fresh=()=>({
+  afn:{flags:false,cols:['a','b'],rows:[{s:'→q0',v:['','']},{s:'q1',v:['','']},{s:'*q2',v:['','']}]},
+  afd:{flags:true,cols:['a','b'],rows:[{s:'',v:['',''],ini:false,fin:false,inac:false},{s:'',v:['',''],ini:false,fin:false,inac:false}]},
+  q:{tot:'',inac:'',n:'',fin:'',dead:'',strs:{}},
+  draw:{nid:1,nodes:[],edges:[]}
+});
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
+
+function render(id){
+  const t=state[id],el=document.getElementById('t-'+id);
+  const S=id==='afd'&&state.ren&&state.ren.on&&state.ren.map;
+  let h='<thead><tr>'+(S?'<th>Novo nome</th>':'')+'<th>'+(id==='afn'?'δ (AFN)':'Estado do AFD')+'</th>';
+  t.cols.forEach((c,j)=>{h+=`<th><input aria-label="Símbolo da coluna ${j+1}" data-t="${id}" data-k="h" data-c="${j}" value="${esc(c)}"></th>`});
+  if(t.flags)h+='<th>Inicial</th><th>Final</th><th>Inacessível</th>';
+  h+='<th aria-label="Remover"></th></tr></thead><tbody>';
+  t.rows.forEach((r,i)=>{
+    const ro=S?' readonly class="ren"':'';
+    let nm='—';if(S){const p=parseSet(r.s);if(Array.isArray(p)&&!r.inac){const k=key(p);if(k in state.ren.map)nm=state.ren.map[k]}}
+    h+=`<tr>${S?`<td><input type="text" aria-label="Novo nome linha ${i+1}" value="${esc(nm)}" readonly class="ren"></td>`:''}<td><input type="text" aria-label="Estado linha ${i+1}" data-t="${id}" data-r="${i}" data-k="s" value="${esc(r.s)}"></td>`;
+    r.v.forEach((v,j)=>{h+=`<td><input type="text" aria-label="Linha ${i+1} coluna ${j+1}" data-t="${id}" data-r="${i}" data-k="v" data-c="${j}" value="${esc(S?toS(v):v)}"${ro}></td>`});
+    if(t.flags)h+=`<td data-cell="ini${i}"><input type="checkbox" aria-label="Inicial linha ${i+1}" data-t="${id}" data-r="${i}" data-k="ini" ${r.ini?'checked':''}></td><td data-cell="fin${i}"><input type="checkbox" aria-label="Final linha ${i+1}" data-t="${id}" data-r="${i}" data-k="fin" ${r.fin?'checked':''}></td><td data-cell="inac${i}"><input type="checkbox" aria-label="Inacessível linha ${i+1}" data-t="${id}" data-r="${i}" data-k="inac" ${r.inac?'checked':''}></td>`;
+    h+=`<td><button class="del" title="Remover linha" aria-label="Remover linha ${i+1}" data-act="delrow" data-t="${id}" data-r="${i}">×</button></td></tr>`;
+  });
+  el.innerHTML=h+'</tbody>';
+}
+
+function renderQ(){
+  const q=state.q;
+  document.getElementById('q-n').value=q.n;document.getElementById('q-tot').value=q.tot||'';document.getElementById('q-inac').value=q.inac||'';document.getElementById('q-fin').value=q.fin;document.getElementById('q-dead').value=q.dead;
+  document.getElementById('strs').innerHTML=STRS.map(w=>`<div class="q"><label for="s-${w}">A cadeia <b class="mono">${w}</b> é</label><select id="s-${w}" data-str="${w}"><option value="">escolha…</option><option value="a" ${q.strs[w]==='a'?'selected':''}>aceita</option><option value="r" ${q.strs[w]==='r'?'selected':''}>rejeitada</option></select></div>`).join('');
+}
+
+function gabarito(){
+  let a='<table><thead><tr><th>δ (AFN)</th>'+SIG.map(x=>`<th>${x}</th>`).join('')+'</tr></thead><tbody>';
+  Object.keys(NFA).forEach(q=>{a+=`<tr><td class="mono">${q===START?'→':''}${FINALS.includes(q)?'*':''}${q}</td>`+SIG.map(x=>`<td class="mono">${fmt(key(NFA[q][x]))}</td>`).join('')+'</tr>'});
+  document.getElementById('g-afn').innerHTML=a+'</tbody></table>';
+  let d='<table><thead><tr><th>Estado do AFD</th>'+SIG.map(x=>`<th>${x}</th>`).join('')+'<th>Inicial</th><th>Final</th><th>Inacessível</th></tr></thead><tbody>';
+  [...order,...ALL.filter(k=>!(k in DFA))].forEach(k=>{const r=k in DFA;d+=`<tr${r?'':' style="opacity:.55"'}><td class="mono">${fmt(k)}</td>`+SIG.map(x=>`<td class="mono">${fmt(trOf(k,x))}</td>`).join('')+`<td>${k===START?'sim':''}</td><td>${isFin(k)?'sim':''}</td><td>${r?'':'sim (corta)'}</td></tr>`});
+  document.getElementById('g-afd').innerHTML=d+'</tbody></table><p class="tip">As linhas apagadas são os inacessíveis. Quem fez só pelos alcançáveis não precisa delas.</p>';
+}
+
+function drawSvg(){
+  const N={q0:[110,160],q1:[300,160],q2:[490,160]},R=27;
+  let s='<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="currentColor"/></marker></defs>';
+  const lbl=(x,y,t)=>`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-size="20" font-weight="700" fill="var(--red)" font-family="Archivo,sans-serif">${t}</text>`;
+  const edge=(p,q,t,side)=>{const[x1,y1]=N[p],[x2,y2]=N[q],dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L;
+    s+=`<line x1="${x1+ux*R}" y1="${y1+uy*R}" x2="${x2-ux*(R+2)}" y2="${y2-uy*(R+2)}" stroke="currentColor" stroke-width="2.2" marker-end="url(#ar)"/>`;
+    s+=lbl((x1+x2)/2-uy*16*side,(y1+y2)/2+ux*16*side,t)};
+  const loop=(p,dir,t)=>{const[x,y]=N[p];let d,lx,ly;
+    if(dir==='up'){d=`M${x-13},${y-24} C${x-40},${y-85} ${x+40},${y-85} ${x+13},${y-24}`;lx=x;ly=y-80}
+    else if(dir==='down'){d=`M${x-13},${y+24} C${x-40},${y+85} ${x+40},${y+85} ${x+13},${y+24}`;lx=x;ly=y+80}
+    else{d=`M${x+24},${y-13} C${x+85},${y-40} ${x+85},${y+40} ${x+24},${y+13}`;lx=x+82;ly=y}
+    s+=`<path d="${d}" fill="none" stroke="currentColor" stroke-width="2.2" marker-end="url(#ar)"/>`+lbl(lx,ly,t)};
+  s+=`<line x1="30" y1="160" x2="${110-R-2}" y2="160" stroke="currentColor" stroke-width="2.2" marker-end="url(#ar)"/>`;
+  edge('q0','q1','a',-1);edge('q1','q2','b',-1);
+  loop('q0','up','a');loop('q1','up','b');loop('q2','up','a');
+  Object.entries(N).forEach(([n,[x,y]])=>{
+    s+=`<circle cx="${x}" cy="${y}" r="${R}" fill="var(--bg)" stroke="currentColor" stroke-width="2.4"/>`;
+    if(FINALS.includes(n))s+=`<circle cx="${x}" cy="${y}" r="${R-6}" fill="none" stroke="currentColor" stroke-width="2"/>`;
+    s+=`<text x="${x}" y="${y+1}" text-anchor="middle" dominant-baseline="middle" font-size="19" font-weight="700" fill="currentColor" font-family="Archivo,sans-serif">${n}</text>`;
+  });
+  document.getElementById('svg').innerHTML=s;
+}
+
+/* correção */
+const cellEl=(t,r,k,c)=>document.querySelector(`[data-t="${t}"][data-r="${r}"][data-k="${k}"]`+(c!=null?`[data-c="${c}"]`:''));
+const mark=(el,cls)=>{if(el){el.classList.remove('ok','bad','emp');if(cls)el.classList.add(cls)}};
+const markTd=(id,name,good)=>{const td=document.querySelector(`#t-${id} [data-cell="${name}"]`);if(td){td.classList.remove('okc','badc');td.classList.add(good?'okc':'badc')}};
+function clearMarks(id){document.querySelectorAll(`#t-${id} .ok,#t-${id} .bad,#t-${id} .emp`).forEach(e=>e.classList.remove('ok','bad','emp'));document.querySelectorAll(`#t-${id} .okc,#t-${id} .badc`).forEach(e=>e.classList.remove('okc','badc'))}
+function report(id,ok,tot,msgs){
+  const fb=document.getElementById('fb-'+id),all=ok===tot&&!msgs.length;
+  fb.className='fb show '+(all?'good':'meh');
+  fb.innerHTML=`<div class="score">${all?'Tudo certo!':ok+' de '+tot+' certos'}</div>`+(msgs.length?'<ul>'+msgs.map(m=>`<li>${m}</li>`).join('')+'</ul>':'')+(all?'':'<p class="tip">Verde: certo. Vermelho: errado. Amarelo: em branco.</p>');
+  return all;
+}
+function symCols(t,msgs){
+  const map={};
+  t.cols.forEach((c,j)=>{const x=c.trim().toLowerCase();if(SIG.includes(x)&&!(x in map))map[x]=j;else if(c.trim())msgs.push(`A coluna "${esc(c)}" não é símbolo do alfabeto Σ = {a, b}.`)});
+  SIG.forEach(x=>{if(!(x in map))msgs.push(`Falta a coluna do símbolo <b>${x}</b>.`)});
+  return map;
+}
+function checkAfn(){
+  clearMarks('afn');const t=state.afn,msgs=[],cm=symCols(t,msgs),seen=new Set();let ok=0;
+  t.rows.forEach((r,i)=>{
+    const st=parseSet(r.s);
+    if(!Array.isArray(st)||st.length!==1||!NFA[st[0]]){if(r.s.trim()){mark(cellEl('afn',i,'s'),'bad');msgs.push(`Linha ${i+1}: "${esc(r.s)}" não é um estado do AFN.`)}return}
+    const q=st[0];if(seen.has(q)){mark(cellEl('afn',i,'s'),'bad');msgs.push(`O estado ${q} aparece em mais de uma linha.`);return}
+    seen.add(q);
+    SIG.forEach(x=>{const j=cm[x];if(j==null)return;const v=parseSet(r.v[j]),el=cellEl('afn',i,'v',j);
+      if(v===null)mark(el,'emp');else if(v!=='inv'&&key(v)===key(NFA[q][x])){ok++;mark(el,'ok')}else mark(el,'bad')});
+  });
+  Object.keys(NFA).forEach(q=>{if(!seen.has(q))msgs.push(`Falta a linha do estado ${q}.`)});
+  return report('afn',ok,Object.keys(NFA).length*SIG.length,msgs);
+}
+function checkAfd(){
+  clearMarks('afd');const t=state.afd,msgs=[],cm=symCols(t,msgs),seen=new Set(),dests=new Set();let ok=0,tot=0;const per=SIG.length+3;
+  t.rows.forEach((r,i)=>{
+    const st=parseSet(r.s),filled=r.s.trim()||r.v.some(v=>v.trim())||r.ini||r.fin||r.inac;
+    if(st===null){if(filled){mark(cellEl('afd',i,'s'),'emp');msgs.push(`Linha ${i+1}: falta escrever qual é o estado.`)}return}
+    if(st==='inv'){mark(cellEl('afd',i,'s'),'bad');msgs.push(`Linha ${i+1}: não entendi "${esc(r.s)}". Use algo como {q0,q1} ou ∅.`);return}
+    if(st.some(q=>!NFA[q])){mark(cellEl('afd',i,'s'),'bad');msgs.push(`Linha ${i+1}: ${fmt(key(st))} tem estado que não existe no AFN.`);return}
+    const k=key(st),reach=k in DFA;
+    if(seen.has(k)){mark(cellEl('afd',i,'s'),'bad');msgs.push(`${fmt(k)} aparece em mais de uma linha.`);return}
+    seen.add(k);mark(cellEl('afd',i,'s'),'ok');tot+=per;
+    SIG.forEach(x=>{const j=cm[x];if(j==null)return;const v=parseSet(r.v[j]),el=cellEl('afd',i,'v',j);
+      if(v===null){mark(el,'emp');return}
+      if(v!=='inv'&&reach)dests.add(key(v));
+      if(v!=='inv'&&key(v)===trOf(k,x)){ok++;mark(el,'ok')}else{mark(el,'bad');if(v!=='inv')msgs.push(`δ(${fmt(k)}, ${x}) está errado. Faça a união de δ(q, ${x}) para cada q dentro de ${fmt(k)}.`)}});
+    const gi=!!r.ini===(k===START);if(gi)ok++;else msgs.push(k===START?`${fmt(k)} é o estado inicial: marque a caixa Inicial.`:`${fmt(k)} não é o inicial. O único inicial do AFD é {${START}}.`);markTd('afd','ini'+i,gi);
+    const gf=!!r.fin===isFin(k);if(gf)ok++;else msgs.push(isFin(k)?`${fmt(k)} contém ${FN}, então é final.`:`${fmt(k)} não contém ${FN}, então não é final.`);markTd('afd','fin'+i,gf);
+    const ga=!!r.inac===!reach;if(ga)ok++;else msgs.push(reach?`${fmt(k)} é alcançável a partir de {${START}}, não marque como inacessível.`:`${fmt(k)} é inacessível: nenhuma seta chega nele saindo de {${START}}. Marque Inacessível (ou apague a linha).`);markTd('afd','inac'+i,ga);
+  });
+  const miss=order.filter(k=>!seen.has(k)&&k!=='');
+  if(miss.length){tot+=miss.length*per;
+    const pend=[...dests].filter(k=>!seen.has(k)&&k in DFA&&k!=='');
+    msgs.push(`Faltam ${miss.length} estado(s) alcançáveis no AFD.`+(pend.length?` Dica: ${pend.map(fmt).join(', ')} ${pend.length>1?'aparecem':'aparece'} como destino na sua tabela mas ainda não ${pend.length>1?'ganharam':'ganhou'} linha própria.`:` Dica: comece por {${START}} e crie uma linha para cada conjunto novo que aparecer.`));
+  }
+  return report('afd',ok,tot||order.length*per,msgs);
+}
+function checkQ(){
+  const q=state.q,msgs=[];let ok=0;const tot=5+STRS.length;
+  const nFin=order.filter(k=>DFA[k].fin).length;const nInac=ALL.length-order.length;
+  const set=(id,good)=>mark(document.getElementById(id),good?'ok':(document.getElementById(id).value.trim()?'bad':'emp'));
+  const ga=parseInt(q.tot,10)===ALL.length;set('q-tot',ga);if(ga)ok++;else msgs.push('Com n estados existem 2ⁿ subconjuntos. Aqui n = 3.');
+  const gb=parseInt(q.inac,10)===nInac;set('q-inac',gb);if(gb)ok++;else msgs.push('Inacessíveis são os subconjuntos que nunca aparecem como destino saindo de {q0}.');
+  const nq=parseInt(q.n,10),g1=nq===order.length||(order.includes('')&&nq===order.length-1);set('q-n',g1);if(g1)ok++;else msgs.push('Conte os estados alcançáveis da tabela do AFD (pode contar ou não o ∅).');
+  const g2=parseInt(q.fin,10)===nFin;set('q-fin',g2);if(g2)ok++;else msgs.push(`Os finais são os conjuntos alcançáveis que contêm ${FN}.`);
+  const d=parseSet(q.dead),g3=Array.isArray(d)&&DEAD.includes(key(d));set('q-dead',g3);if(g3)ok++;else msgs.push('O estado morto é aquele que vai para ele mesmo com a e com b e não é final.');
+  STRS.forEach(w=>{const el=document.getElementById('s-'+w),exp=accepts(w)?'a':'r',v=q.strs[w]||'';
+    if(v===exp){ok++;mark(el,'ok')}else{mark(el,v?'bad':'emp');if(v){let k=START,path=[fmt(k)];for(const c of w){k=DFA[k].tr[c];path.push(fmt(k))}msgs.push(`<b class="mono">${w}</b>: o caminho é ${path.join(' → ')}, que ${DFA[k].fin?'é final (aceita)':'não é final (rejeita)'}.`)}}});
+  return report('q',ok,tot,msgs);
+}
+
+function exportText(){
+  const tbl=t=>{const head='| Estado | '+t.cols.join(' | ')+(t.flags?' | Inicial | Final | Inacessível':'')+' |';const sep='|'+'---|'.repeat(t.cols.length+1+(t.flags?3:0));
+    return [head,sep,...t.rows.map(r=>'| '+(r.s||' ')+' | '+r.v.map(v=>v||' ').join(' | ')+(t.flags?` | ${r.ini?'x':''} | ${r.fin?'x':''} | ${r.inac?'x':''}`:'')+' |')].join('\n')};
+  const q=state.q;
+  return 'Exercício AFN → AFD (q0 -a-> q0,q1; q1 -b-> q1,q2; q2 -a-> q2; inicial q0; final q2)\n\nPASSO 1, tabela do AFN:\n'+tbl(state.afn)+'\n\nPASSO 2, tabela do AFD:\n'+tbl(state.afd)+
+  `\n\nPASSO 3:\nTotal de subconjuntos: ${q.tot||'-'}\nInacessíveis: ${q.inac||'-'}\nEstados no AFD final: ${q.n||'-'}\nNº de finais: ${q.fin||'-'}\nEstado morto: ${q.dead||'-'}\n`+STRS.map(w=>`${w}: ${q.strs[w]==='a'?'aceita':q.strs[w]==='r'?'rejeitada':'-'}`).join('\n')+
+  (state.ren&&state.ren.map?'\n\nNOMES NOVOS:\n'+Object.keys(state.ren.map).map(k=>state.ren.map[k]+' = '+fmt0(k)).join('\n'):'')+'\n\nPASSO 4, diagrama do AFD:\nEstados: '+(state.draw.nodes.map(n=>(n.ini?'→':'')+(n.fin?'*':'')+n.name).join('  ')||'-')+'\nTransições:\n'+(state.draw.edges.map(e=>`δ(${nodeById(e.from)?.name}, ${e.sym}) = ${nodeById(e.to)?.name}`).join('\n')||'-');
+}
+
+/* editor do diagrama */
+let pending=null,dmarks={};
+const D=()=>state.draw;
+const nodeR=n=>Math.max(30,String(label(n.name)).length*4.6+10);
+const nodeById=id=>D().nodes.find(n=>n.id===id);
+function addNode(name,x,y){const d=D(),i=d.nodes.length;const n={id:d.nid++,name:name||('S'+i),x:x??(90+(i%4)*175),y:y??(90+Math.floor(i/4)*130%300),ini:false,fin:false,inac:false};d.nodes.push(n);return n}
+function addEdge(from,to,sym){const d=D();if(d.edges.some(e=>e.from===from&&e.to===to&&e.sym===sym))return;d.edges.push({from,to,sym})}
+function drawD(){
+  const d=D(),svg=document.getElementById('dsvg');
+  let s='<defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="currentColor"/></marker></defs>';
+  const groups={};d.edges.forEach(e=>{const k=e.from+'>'+e.to;(groups[k]=groups[k]||[]).push(e.sym)});
+  Object.entries(groups).forEach(([k,syms])=>{
+    const [fi,ti]=k.split('>').map(Number),A=nodeById(fi),B=nodeById(ti);if(!A||!B)return;
+    const lab=[...new Set(syms)].sort().join(', ');
+    const lt=(x,y)=>`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-size="19" font-weight="700" fill="var(--red)" font-family="Archivo,sans-serif" style="paint-order:stroke;stroke:var(--soft);stroke-width:5px">${esc(lab)}</text>`;
+    if(fi===ti){const r=nodeR(A),x=A.x,y=A.y;
+      s+=`<path d="M${x-12},${y-r+3} C${x-42},${y-r-62} ${x+42},${y-r-62} ${x+12},${y-r+3}" fill="none" stroke="currentColor" stroke-width="2.2" marker-end="url(#ar2)"/>`+lt(x,y-r-56);return}
+    const both=groups[ti+'>'+fi],dx=B.x-A.x,dy=B.y-A.y,L=Math.hypot(dx,dy)||1,px=-dy/L,py=dx/L,off=both?34:0;
+    const cx=(A.x+B.x)/2+px*off,cy=(A.y+B.y)/2+py*off;
+    const u=(x1,y1,x2,y2)=>{const l=Math.hypot(x2-x1,y2-y1)||1;return[(x2-x1)/l,(y2-y1)/l]};
+    const [sx,sy]=u(A.x,A.y,cx,cy),[ex,ey]=u(cx,cy,B.x,B.y),ra=nodeR(A),rb=nodeR(B)+2;
+    const P0=[A.x+sx*ra,A.y+sy*ra],P2=[B.x-ex*rb,B.y-ey*rb];
+    s+=`<path d="M${P0} Q${cx},${cy} ${P2}" fill="none" stroke="currentColor" stroke-width="2.2" marker-end="url(#ar2)"/>`;
+    const mx=.25*P0[0]+.5*cx+.25*P2[0],my=.25*P0[1]+.5*cy+.25*P2[1];
+    s+=lt(mx+px*(off?14:16),my+py*(off?14:16));
+  });
+  d.nodes.forEach(n=>{const r=nodeR(n),m=dmarks['n'+n.id],col=m==='ok'?'var(--ok)':m==='bad'?'var(--red)':'currentColor',fill=m==='ok'?'var(--okbg)':m==='bad'?'var(--badbg)':'var(--bg)';
+    s+=`<g class="nd" data-nid="${n.id}">`;
+    if(n.ini)s+=`<line x1="${n.x-r-46}" y1="${n.y}" x2="${n.x-r-3}" y2="${n.y}" stroke="currentColor" stroke-width="2.2" marker-end="url(#ar2)"/>`;
+    s+=`<circle cx="${n.x}" cy="${n.y}" r="${r}" fill="${fill}" stroke="${col}" stroke-width="${pending===n.id?4.5:2.4}" ${pending===n.id?'stroke-dasharray="6 4"':''}/>`;
+    if(n.fin)s+=`<circle cx="${n.x}" cy="${n.y}" r="${r-6}" fill="none" stroke="${col}" stroke-width="2"/>`;
+    s+=`<text x="${n.x}" y="${n.y+1}" text-anchor="middle" dominant-baseline="middle" font-size="16" font-weight="700" fill="currentColor" font-family="ui-monospace,Menlo,monospace" pointer-events="none">${esc(label(n.name))}</text></g>`;
+  });
+  if(!d.nodes.length)s+='<text x="360" y="220" text-anchor="middle" font-size="18" fill="var(--mut)" font-family="Archivo,sans-serif">Adicione estados no painel ao lado →</text>';
+  svg.innerHTML=s;
+}
+function renderDPanel(){
+  const d=D(),opts=d.nodes.map(n=>`<option value="${n.id}">${esc(label(n.name))}</option>`).join('');
+  document.getElementById('d-from').innerHTML=opts;document.getElementById('d-to').innerHTML=opts;
+  document.getElementById('d-nodes').innerHTML=d.nodes.length?d.nodes.map(n=>`<div class="li ${dmarks['n'+n.id]==='ok'?'okc':dmarks['n'+n.id]==='bad'?'badc':''}"><input type="text" aria-label="Nome do estado" data-dn="${n.id}" data-dk="name" value="${esc(n.name)}"><label><input type="checkbox" data-dn="${n.id}" data-dk="ini" ${n.ini?'checked':''}>Inicial</label><label><input type="checkbox" data-dn="${n.id}" data-dk="fin" ${n.fin?'checked':''}>Final</label><button class="del" aria-label="Remover estado" data-act="ddeln" data-id="${n.id}">×</button></div>`).join(''):'<p class="tip">Nenhum estado ainda.</p>';
+  document.getElementById('d-edges').innerHTML=d.edges.length?d.edges.map((e,i)=>{const A=nodeById(e.from),B=nodeById(e.to);return`<div class="li ${dmarks['e'+i]==='ok'?'okc':dmarks['e'+i]==='bad'?'badc':''}"><span class="lab">δ(${esc(label(A?.name??''))}, ${e.sym}) = ${esc(label(B?.name??''))}</span><button class="del" aria-label="Remover transição" data-act="ddele" data-i="${i}">×</button></div>`}).join(''):'<p class="tip">Nenhuma transição ainda.</p>';
+}
+const redrawD=()=>{drawD();renderDPanel();save()};
+function hint(t){document.getElementById('dhint').textContent=t}
+function nodeClick(id){
+  const n=nodeById(id);
+  if(pending==null){pending=id;hint(`Origem: ${n.name}. Agora clique no destino (símbolo ${document.getElementById('d-sym').value}).`)}
+  else{const sym=document.getElementById('d-sym').value,A=nodeById(pending);addEdge(pending,id,sym);hint(`Criada: δ(${A.name}, ${sym}) = ${n.name}. Clique em outro estado para a próxima.`);pending=null;dmarks={}}
+  redrawD();
+}
+{
+  const svg=document.getElementById('dsvg');let drag=null;
+  const pt=e=>{const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse())};
+  svg.addEventListener('pointerdown',e=>{const g=e.target.closest('g.nd');if(!g){if(pending!=null){pending=null;hint('Transição cancelada.');drawD()}return}
+    const n=nodeById(+g.dataset.nid),p=pt(e);drag={n,dx:n.x-p.x,dy:n.y-p.y,sx:p.x,sy:p.y,moved:false};svg.setPointerCapture(e.pointerId);e.preventDefault()});
+  svg.addEventListener('pointermove',e=>{if(!drag)return;const p=pt(e);if(Math.hypot(p.x-drag.sx,p.y-drag.sy)>5)drag.moved=true;
+    if(drag.moved){drag.n.x=Math.max(40,Math.min(680,p.x+drag.dx));drag.n.y=Math.max(70,Math.min(400,p.y+drag.dy));drawD()}});
+  svg.addEventListener('pointerup',()=>{if(!drag)return;const d=drag;drag=null;if(d.moved)save();else nodeClick(d.n.id)});
+}
+function genFromTable(){
+  const t=state.afd,cm={};t.cols.forEach((c,j)=>{const x=c.trim().toLowerCase();if(SIG.includes(x)&&!(x in cm))cm[x]=j});
+  const rows=[],byKey={};
+  t.rows.forEach(r=>{if(r.inac)return;const st=parseSet(r.s);if(!Array.isArray(st))return;const k=key(st);if(k in byKey)return;byKey[k]=rows.length;rows.push({k,r})});
+  if(!rows.length){hint('Sua tabela do passo 2 ainda não tem estados válidos.');return}
+  const depth={},q=[rows.find(x=>x.r.ini)?.k??rows[0].k];depth[q[0]]=0;
+  while(q.length){const k=q.shift(),row=rows[byKey[k]];SIG.forEach(x=>{if(cm[x]==null)return;const v=parseSet(row.r.v[cm[x]]);if(!Array.isArray(v))return;const dk=key(v);if(dk in byKey&&!(dk in depth)){depth[dk]=depth[k]+1;q.push(dk)}})}
+  let maxd=Math.max(0,...Object.values(depth));rows.forEach(x=>{if(!(x.k in depth))depth[x.k]=++maxd});
+  const lv={};rows.forEach(x=>(lv[depth[x.k]]=lv[depth[x.k]]||[]).push(x));
+  const cols=Object.keys(lv).length,d=state.draw={nid:1,nodes:[],edges:[]},ids={};
+  Object.keys(lv).sort((a,b)=>a-b).forEach((L,ci)=>{const arr=lv[L];arr.forEach((x,ri)=>{const n=addNode(state.ren&&state.ren.on&&state.ren.map&&(x.k in state.ren.map)?state.ren.map[x.k]:fmt0(x.k),100+ci*(540/Math.max(1,cols-1||1)),(ri+1)*440/(arr.length+1)+10);n.ini=!!x.r.ini;n.fin=!!x.r.fin;ids[x.k]=n.id})});
+  rows.forEach(x=>SIG.forEach(s=>{if(cm[s]==null)return;const v=parseSet(x.r.v[cm[s]]);if(!Array.isArray(v))return;const dk=key(v);if(dk in ids)addEdge(ids[x.k],ids[dk],s)}));
+  pending=null;dmarks={};hint('Estados puxados da tabela. Arraste para organizar.');redrawD();
+}
+function checkDraw(){
+  const d=D(),msgs=[],byKey={};let ok=0;dmarks={};
+  d.nodes.forEach(n=>{const st=parseSet(n.name);
+    if(!Array.isArray(st)||st.some(q=>!NFA[q])){dmarks['n'+n.id]='bad';msgs.push(`O estado "${esc(n.name)}" não é um conjunto válido de estados do AFN. Nomeie como {q1,q2} ou ∅.`);return}
+    const k=key(st);if(!(k in DFA)){dmarks['n'+n.id]='bad';msgs.push(`${fmt(k)} é inacessível, não entra no desenho do AFD.`);return}
+    if(k in byKey){dmarks['n'+n.id]='bad';msgs.push(`${fmt(k)} foi desenhado duas vezes.`);return}
+    byKey[k]=n;dmarks['n'+n.id]='ok';
+    if(!!n.ini===DFA[k].ini)ok++;else msgs.push(DFA[k].ini?`${fmt(k)} precisa da seta de estado inicial.`:`${fmt(k)} não é o estado inicial.`);
+    if(!!n.fin===DFA[k].fin)ok++;else msgs.push(DFA[k].fin?`${fmt(k)} contém ${FN}, marque como final (círculo duplo).`:`${fmt(k)} não contém ${FN}, não é final.`);
+    if(!!n.ini!==DFA[k].ini||!!n.fin!==DFA[k].fin)dmarks['n'+n.id]='bad';
+  });
+  const keyOf={};Object.entries(byKey).forEach(([k,n])=>keyOf[n.id]=k);
+  d.edges.forEach((e,i)=>{const fk=keyOf[e.from],tk=keyOf[e.to];
+    if(fk==null||tk==null){dmarks['e'+i]='bad';return}
+    const dup=d.edges.filter(o=>o.from===e.from&&o.sym===e.sym).length>1;
+    if(DFA[fk].tr[e.sym]===tk&&!dup){dmarks['e'+i]='ok';ok++}
+    else{dmarks['e'+i]='bad';msgs.push(dup?`Saem duas setas com <b>${e.sym}</b> de ${fmt(fk)}. Num AFD cada estado tem exatamente uma transição por símbolo.`:`δ(${fmt(fk)}, ${e.sym}) não vai para ${fmt(tk)}.`)}
+  });
+  const hasE=('' in byKey),need=(k,x)=>hasE||DFA[k].tr[x]!=='';
+  Object.keys(byKey).forEach(k=>SIG.forEach(x=>{const n=byKey[k];if(need(k,x)&&!d.edges.some(e=>e.from===n.id&&e.sym===x))msgs.push(`Falta a seta de ${fmt(k)} com <b>${x}</b>.`)}));
+  const req=order.filter(k=>k!==''||hasE);
+  const miss=req.filter(k=>!(k in byKey));if(miss.length)msgs.push(`Faltam ${miss.length} estado(s) no desenho.`);
+  const totD=req.reduce((s,k)=>s+2+SIG.filter(x=>need(k,x)).length,0);
+  drawD();renderDPanel();
+  return report('draw',ok,totD,[...new Set(msgs)]);
+}
+document.addEventListener('input',e=>{const id=e.target.dataset.dn;if(!id)return;const n=nodeById(+id),k=e.target.dataset.dk;
+  if(k==='name'){n.name=e.target.value;drawD();const o=document.querySelectorAll(`#d-from option[value="${id}"],#d-to option[value="${id}"]`);o.forEach(x=>x.textContent=label(n.name))}else n[k]=e.target.checked;
+  delete dmarks['n'+id];drawD();save()});
+document.addEventListener('change',e=>{if(e.target.dataset.dn&&e.target.dataset.dk==='name')renderDPanel()});
+document.getElementById('d-name').addEventListener('keydown',e=>{if(e.key==='Enter')document.querySelector('[data-act=dadd]').click()});
+
+/* eventos */
+document.addEventListener('input',e=>{
+  const el=e.target,d=el.dataset;
+  if(d.t&&state[d.t]&&d.k){const t=state[d.t];
+    if(d.k==='h')t.cols[+d.c]=el.value;
+    else if(d.k==='s')t.rows[+d.r].s=el.value;
+    else if(d.k==='v')t.rows[+d.r].v[+d.c]=el.value;
+    else if(d.k==='ini'||d.k==='fin'||d.k==='inac'){t.rows[+d.r][d.k]=el.checked;el.parentElement.classList.remove('okc','badc')}
+    mark(el,null);
+  }else if(el.id==='q-n'){state.q.n=el.value;mark(el,null)}
+  else if(el.id==='q-fin'){state.q.fin=el.value;mark(el,null)}
+  else if(el.id==='q-tot'){state.q.tot=el.value;mark(el,null)}
+  else if(el.id==='q-inac'){state.q.inac=el.value;mark(el,null)}
+  else if(el.id==='q-dead'){state.q.dead=el.value;mark(el,null)}
+  save();
+});
+document.addEventListener('change',e=>{const w=e.target.dataset.str;if(w){state.q.strs[w]=e.target.value;mark(e.target,null);save()}});
+let resetArmed=false;
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const act=b.dataset.act,id=b.dataset.t,t=state[id];
+  if(act==='addrow'){t.rows.push({s:'',v:t.cols.map(()=>''),ini:false,fin:false,inac:false});render(id);save();document.querySelector(`[data-t="${id}"][data-r="${t.rows.length-1}"][data-k="s"]`).focus()}
+  else if(act==='delrow'){t.rows.splice(+b.dataset.r,1);if(!t.rows.length)t.rows.push({s:'',v:t.cols.map(()=>''),ini:false,fin:false,inac:false});render(id);save()}
+  else if(act==='addcol'){t.cols.push('');t.rows.forEach(r=>r.v.push(''));render(id);save()}
+  else if(act==='delcol'){if(t.cols.length>1){t.cols.pop();t.rows.forEach(r=>r.v.pop());render(id);save()}}
+  else if(act==='check'){({afn:checkAfn,afd:checkAfd,q:checkQ,draw:checkDraw})[id]()}
+  else if(act==='dadd'){const inp=document.getElementById('d-name');addNode(inp.value.trim());inp.value='';dmarks={};redrawD();inp.focus()}
+  else if(act==='dedge'){const f=+document.getElementById('d-from').value,to=+document.getElementById('d-to').value;if(nodeById(f)&&nodeById(to)){addEdge(f,to,document.getElementById('d-sym2').value);dmarks={};redrawD()}}
+  else if(act==='ddeln'){const nid=+b.dataset.id,d=D();d.nodes=d.nodes.filter(n=>n.id!==nid);d.edges=d.edges.filter(x=>x.from!==nid&&x.to!==nid);if(pending===nid)pending=null;dmarks={};redrawD()}
+  else if(act==='ddele'){D().edges.splice(+b.dataset.i,1);dmarks={};redrawD()}
+  else if(act==='dgen'){genFromTable()}
+  else if(act==='rename'){const {map,keys}=buildMap();if(!keys.length){document.getElementById('renmap').innerHTML='<p class="tip">Escreva pelo menos um estado válido na tabela antes de renomear.</p>';return}
+    state.ren={map,on:true};clearMarks('afd');render('afd');renderRen();drawD();renderDPanel();save()}
+  else if(act==='eye'){if(!state.ren||!state.ren.map)return;state.ren.on=!state.ren.on;render('afd');renderRen();drawD();renderDPanel();save()}
+  else if(act==='dclear'){if(b.dataset.armed!=='1'){b.dataset.armed='1';b.textContent='Clique de novo para limpar';setTimeout(()=>{b.dataset.armed='';b.textContent='Limpar diagrama'},3000);return}
+    b.dataset.armed='';b.textContent='Limpar diagrama';state.draw={nid:1,nodes:[],edges:[]};pending=null;dmarks={};redrawD()}
+  else if(act==='checkall'){checkAfn();checkAfd();checkQ();checkDraw();document.getElementById('fb-afn').scrollIntoView({behavior:'smooth',block:'center'})}
+  else if(act==='copy'){const txt=exportText(),out=document.getElementById('out'),msg=document.getElementById('copied');out.value=txt;
+    const done=()=>{msg.textContent='Copiado! Cole no chat.';setTimeout(()=>msg.textContent='',4000)};
+    const fallback=()=>{out.style.display='block';out.select();msg.textContent='Selecione o texto abaixo e copie (Ctrl+C).'};
+    try{navigator.clipboard.writeText(txt).then(done,fallback)}catch(err){fallback()}}
+  else if(act==='reset'){
+    if(!resetArmed){resetArmed=true;b.textContent='Clique de novo para confirmar';setTimeout(()=>{resetArmed=false;b.textContent='Limpar tudo'},3000);return}
+    resetArmed=false;b.textContent='Limpar tudo';state=fresh();save();boot();
+    document.querySelectorAll('.fb').forEach(f=>f.className='fb');}
+});
+
+function boot(){render('afn');render('afd');renderQ();pending=null;dmarks={};drawD();renderDPanel();renderRen()}
+function start(data){
+  state=data&&data.afn?data:null;
+  if(!state){try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){state=null}}
+  if(!state||!state.afn||!state.afd||!state.q)state=fresh();
+  if(!state.draw||!Array.isArray(state.draw.nodes))state.draw=fresh().draw;
+  drawSvg();gabarito();boot();
+  window.claude?.hot?.snapshot?.(()=>state);
+}
+window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.hot?.data??{});
+}
+</script>
+</body>
+</html>
